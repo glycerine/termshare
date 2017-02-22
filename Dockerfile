@@ -1,9 +1,12 @@
-FROM golang:onbuild
+FROM alpine:3.4
 
-RUN for GOOS in darwin linux; do \
-      for GOARCH in 386 amd64; do \
-        go build -v -o termshare-$GOOS-$GOARCH; \
-      done; \
-    done ; \
-    ls -la /go/src/app/termshare-*
+ENTRYPOINT ["/termshare", "-d"]
+
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk
+
+USER 10001
+
+ENV PORT=8080
+
+COPY bin/termshare-linux-amd64 /termshare
 
